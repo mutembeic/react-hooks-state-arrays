@@ -2,18 +2,47 @@ import React, { useState } from "react";
 import { spicyFoods, getNewRandomSpicyFood } from "../data";
 
 function SpicyFoodList() {
+  // const [foods, setFoods] = useState(spicyFoods);
   const [foods, setFoods] = useState(spicyFoods);
+const [filterBy, setFilterBy] = useState("All");
 
+const foodsToDisplay = foods.filter((food) => {
+  if (filterBy === "All") {
+    return true;
+  } else {
+    return food.cuisine === filterBy;
+  }
+});
   function handleAddFood() {
     const newFood = getNewRandomSpicyFood();
-    console.log(newFood);
+    const newFoodArray = [...foods, newFood];
+    setFoods(newFoodArray);
   }
 
-  const foodList = foods.map((food) => (
-    <li key={food.id}>
+  // const foodList = foods.map((food) => (
+  //   <li key={food.id}>
+  //     {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
+  //   </li>
+  // ));
+  const foodList = foodsToDisplay.map((food) => (
+    <li key={food.id} onClick={() => handleLiClick(food.id)}>
       {food.name} | Heat: {food.heatLevel} | Cuisine: {food.cuisine}
     </li>
   ));
+  
+  function handleLiClick(id) {
+    const newFoodArray = foods.map((food) => {
+      if (food.id === id) {
+        return {
+          ...food,
+          heatLevel: food.heatLevel + 1,
+        };
+      } else {
+        return food;
+      }
+    });
+    setFoods(newFoodArray);
+  }
 
   return (
     <div>
